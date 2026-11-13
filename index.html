@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>2027 巴黎與芬蘭跨國度假行程（3/25 - 4/4）</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+          },
+          colors: {
+            paris: {
+              dark: '#0f172a',
+              blue: '#1e3a8a',
+              accent: '#2563eb',
+              gold: '#d97706',
+              light: '#eff6ff',
+            },
+            finland: {
+              dark: '#022c22',
+              green: '#065f46',
+              aurora: '#10b981',
+              teal: '#0d9488',
+              light: '#ecfdf5',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 隱藏橫向捲軸但保留滑動功能 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* 極光漸層動態微光 */
+    .aurora-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #065f46 80%, #0d9488 100%);
+    }
+    .paris-theme-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 70%, #b45309 100%);
+    }
+    .finland-theme-bg {
+      background: linear-gradient(135deg, #022c22 0%, #065f46 65%, #0d9488 100%);
+    }
+    /* 自訂核取方塊動畫 */
+    .check-item input:checked + span {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased pb-24">
+
+  <!-- Toast 提示訊息框 (替代 alert) -->
+  <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white px-4 py-2.5 rounded-full shadow-xl text-sm font-medium flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none translate-y-4">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">已複製到剪貼簿</span>
+  </div>
+
+  <!-- 頂部 Hero Banner 與主題切換器 -->
+  <header id="header-banner" class="aurora-bg text-white pt-6 pb-5 px-4 shadow-lg relative overflow-hidden">
+    <!-- 裝飾性 SVG 圖騰 (鐵塔與極光雪花) -->
+    <svg class="absolute right-2 top-2 w-28 h-28 text-white/10 pointer-events-none" viewBox="0 0 100 100" fill="currentColor">
+      <path d="M50 5 L53 35 L62 65 L75 95 L63 95 L56 75 L44 75 L37 95 L25 95 L38 65 L47 35 Z M45 62 L55 62 L52 45 L48 45 Z"/>
+    </svg>
+    <div class="max-w-2xl mx-auto relative z-10">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-sm border border-white/20">
+          🇫🇷 巴黎 × 🇫🇮 芬蘭北極圈
+        </span>
+        <!-- 主題色調切換按鈕 -->
+        <div class="flex items-center bg-black/25 p-1 rounded-full border border-white/15">
+          <button onclick="setTheme('dual')" id="btn-theme-dual" class="px-2.5 py-1 rounded-full text-xs font-medium bg-white text-slate-900 shadow-sm transition">雙色</button>
+          <button onclick="setTheme('paris')" id="btn-theme-paris" class="px-2.5 py-1 rounded-full text-xs font-medium text-white/80 hover:text-white transition">巴黎藍金</button>
+          <button onclick="setTheme('finland')" id="btn-theme-finland" class="px-2.5 py-1 rounded-full text-xs font-medium text-white/80 hover:text-white transition">極光綠</button>
+        </div>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">2027 跨國度假旅遊手冊</h1>
+      <p class="text-blue-100 text-sm mt-1">2027年3月25日（四）— 4月4日（日）｜11天10夜全攻略</p>
+    </div>
+  </header>
+
+  <!-- Sticky 頂部日期與功能快速導覽列 -->
+  <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-2xl mx-auto">
+      <!-- 主分頁切換：每日行程 vs 總覽工具箱 -->
+      <div class="flex border-b border-slate-100 px-3 pt-2 gap-2">
+        <button onclick="switchMainTab('itinerary')" id="tab-itinerary" class="flex-1 py-2.5 px-3 text-sm font-bold rounded-t-xl border-b-2 border-blue-600 text-blue-700 bg-blue-50/60 transition flex items-center justify-center gap-1.5">
+          <span>🗓️</span> 每日詳細行程
+        </button>
+        <button onclick="switchMainTab('overview')" id="tab-overview" class="flex-1 py-2.5 px-3 text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5">
+          <span>🧳</span> 航班/住宿/天氣/清單
+        </button>
+      </div>
+
+      <!-- 日期橫向快速滑動列 (僅在每日行程分頁顯示) -->
+      <div id="day-nav-bar" class="flex overflow-x-auto no-scrollbar py-2 px-3 gap-2 snap-x">
+        <a href="#day-1" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-sm transition">D1 3/25</a>
+        <a href="#day-2" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 transition">D2 3/26 巴黎</a>
+        <a href="#day-3" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 transition">D3 3/27 迪士尼</a>
+        <a href="#day-4" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 transition">D4 3/28 瑪黑</a>
+        <a href="#day-5" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50 transition">D5 3/29 赫爾辛基</a>
+        <a href="#day-6" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50 transition">D6 3/30 聖誕村</a>
+        <a href="#day-7" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50 transition">D7 3/31 破冰船</a>
+        <a href="#day-8" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50 transition">D8 4/1 馴鹿雪車</a>
+        <a href="#day-9" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50 transition">D9 4/2 羅凡尼米</a>
+        <a href="#day-10" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50 transition">D10 4/3 掃貨</a>
+        <a href="#day-11" onclick="highlightDayPill(this)" class="day-pill snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">D11 4/4 返港</a>
+      </div>
+
+      <!-- 總覽區塊快速跳轉列 (僅在總覽分頁顯示) -->
+      <div id="overview-nav-bar" class="hidden flex overflow-x-auto no-scrollbar py-2 px-3 gap-2 snap-x">
+        <a href="#sec-flights" class="snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50">✈️ 航班與夜車</a>
+        <a href="#sec-hotels" class="snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50">🏨 酒店地址</a>
+        <a href="#sec-bookings" class="snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-emerald-50">🎫 預約與購票</a>
+        <a href="#sec-weather" class="snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-amber-50">🧥 天氣與穿搭</a>
+        <a href="#sec-checklist" class="snap-start shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-purple-50">✅ 檢核與手信清單</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主要內容容器 -->
+  <main class="max-w-2xl mx-auto px-4 pt-5">
+
+    <!-- ==================== 分頁 1：每日詳細行程 ==================== -->
+    <div id="view-itinerary" class="space-y-6">
+
+      <!-- 快捷酒店地址列（方便隨時叫車） -->
+      <div class="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row gap-2.5">
+        <div class="flex-1 flex items-center justify-between bg-blue-50/70 px-3 py-2 rounded-xl border border-blue-100">
+          <div class="min-w-0 pr-2">
+            <div class="text-[11px] font-bold text-blue-700">🇫🇷 巴黎住宿 (3/26-29)</div>
+            <div class="text-xs font-semibold text-slate-800 truncate">Citadines Les Halles Paris</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="copyText('4 Rue des Innocents, 75001 Paris, France', '已複製巴黎酒店地址')" class="p-2.5 bg-white text-blue-700 rounded-lg border border-blue-200 shadow-xs active:scale-95 transition text-xs font-medium" title="複製地址">📋</button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Citadines+Les+Halles+Paris+4+Rue+des+Innocents+75001+Paris" target="_blank" rel="noopener" class="p-2.5 bg-blue-600 text-white rounded-lg shadow-xs active:scale-95 transition text-xs font-medium" title="開啟地圖">📍</a>
+          </div>
+        </div>
+        <div class="flex-1 flex items-center justify-between bg-emerald-50/70 px-3 py-2 rounded-xl border border-emerald-100">
+          <div class="min-w-0 pr-2">
+            <div class="text-[11px] font-bold text-emerald-700">🇫🇮 羅凡尼米住宿 (3/30-4/2)</div>
+            <div class="text-xs font-semibold text-slate-800 truncate">Santa Claus Holiday Village</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="copyText('Tähtikuja 2, 96930 Rovaniemi, Finland', '已複製聖誕老人村酒店地址')" class="p-2.5 bg-white text-emerald-700 rounded-lg border border-emerald-200 shadow-xs active:scale-95 transition text-xs font-medium" title="複製地址">📋</button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Santa+Claus+Holiday+Village+Tahtikuja+2+Rovaniemi" target="_blank" rel="noopener" class="p-2.5 bg-emerald-600 text-white rounded-lg shadow-xs active:scale-95 transition text-xs font-medium" title="開啟地圖">📍</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 1 -->
+      <article id="day-1" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-gradient-to-r from-slate-800 to-blue-900 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-blue-200 uppercase tracking-wider">Day 1｜2027年3月25日（四）</span>
+            <h2 class="text-lg font-bold">🇭🇰 香港啟程飛往北歐</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">跨夜飛行</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-blue-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">18:45 - 19:15</div>
+              <div class="font-semibold text-slate-900 mt-0.5">抵達香港國際機場（HKG T1）</div>
+              <p class="text-sm text-slate-600 mt-1">辦理芬蘭航空 Check-in 託運行李及離境安檢手續。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Hong+Kong+International+Airport+Terminal+1" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-xs font-medium transition">
+                  📍 香港國際機場 T1
+                </a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">21:45 起飛</div>
+              <div class="font-semibold text-slate-900 mt-0.5">✈️ 芬蘭航空 AY100（HKG ➔ HEL）</div>
+              <p class="text-sm text-slate-600 mt-1">直飛赫爾辛基萬塔機場，預計當地時間翌日 05:45 抵達。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 2 -->
+      <article id="day-2" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-blue-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-900 via-blue-800 to-amber-700 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-amber-200 uppercase tracking-wider">Day 2｜2027年3月26日（五）</span>
+            <h2 class="text-lg font-bold">🇫🇷 抵達巴黎、黃金地標 &amp; 塞納河遊船</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">巴黎 Day 1</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-blue-200 space-y-4">
+            <!-- Item -->
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">05:45 - 09:50</div>
+              <div class="font-semibold text-slate-900 mt-0.5">✈️ 赫爾辛基轉機 ➔ AY1571 飛抵巴黎</div>
+              <p class="text-sm text-slate-600 mt-1">05:45 抵 HEL 辦理申根入境，搭乘 <strong>AY1571（07:40 ➔ 09:50）</strong> 抵達巴黎戴高樂機場（CDG T2B）。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Paris+Charles+de+Gaulle+Airport+Terminal+2B" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 CDG Terminal 2B</a>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">09:50 - 12:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🚆 RER B 進市區 &amp; 酒店寄存行李</div>
+              <p class="text-sm text-slate-600 mt-1">機場機台購 <strong>RER B 紙本單程票（€11.80/人）</strong> 直達 Châtelet - Les Halles 站。認準 <strong>Sortie 1 (Marguerite de Navarre)</strong> 升降機出站，步行 2 分鐘至酒店寄存行李。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Citadines+Les+Halles+Paris+4+Rue+des+Innocents+75001+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 Citadines Les Halles Paris</a>
+                <button onclick="copyText('4 Rue des Innocents, 75001 Paris, France', '已複製巴黎酒店地址')" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">📋 複製地址</button>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">12:30 - 13:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🥞 午餐：Crêperie Saint-Honoré</div>
+              <p class="text-sm text-slate-600 mt-1">步行前往享用道地現做法式鹹甜可麗餅午餐。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Creperie+Saint+Honore+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Crêperie Saint-Honoré</a>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">13:30 - 16:15</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🚶‍♂️ 四大黃金地標漫步</div>
+              <p class="text-sm text-slate-600 mt-1">新橋（Pont Neuf）➔ 羅浮宮金字塔 ➔ 小凱旋門與杜樂麗花園 ➔ 皇家宮殿黑白柱（Palais-Royal）。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Pont+Neuf+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 新橋</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Louvre+Pyramid+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 羅浮宮金字塔</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Jardin+des+Tuileries+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 杜樂麗花園</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Colonnes+de+Buren+Palais+Royal+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 皇家宮殿黑白柱</a>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">16:30 - 18:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🗼 夏樂宮俯瞰鐵塔 &amp; 塞納河遊船</div>
+              <p class="text-sm text-slate-600 mt-1">使用 Apple Wallet Navigo（Ticket t+）搭地鐵 1 號線轉 9 號線往夏樂宮（Trocadéro）拍艾菲爾鐵塔全景，隨後步行至碼頭搭乘塞納河遊船。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Place+du+Trocadero+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 夏樂宮 Trocadéro</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Bateaux+Parisiens+Port+de+la+Bourdonnais+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 塞納河遊船碼頭</a>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">19:30 - 21:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🥩 晚餐 Le Relais du Vin &amp; 🛒 Monoprix 採購</div>
+              <p class="text-sm text-slate-600 mt-1">享用安特衛普牛排配薯條晚餐；21:00 至 <strong>Monoprix Les Halles</strong> 買 1.5L 大瓶水、黑松露洋芋片，以及<strong>油封鴨腿</strong>（作明日迪士尼回程宵夜），隨後辦理入住休息。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Le+Relais+du+Vin+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Le Relais du Vin</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Monoprix+Les+Halles+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">📍 Monoprix Les Halles</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 3 -->
+      <article id="day-3" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-blue-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-indigo-900 via-blue-800 to-purple-800 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-purple-200 uppercase tracking-wider">Day 3｜2027年3月27日（六）</span>
+            <h2 class="text-lg font-bold">🏰 巴黎迪士尼雙園精華 &amp; 煙花秀</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">雙園暢玩</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900">
+            🎒 <strong>入園貼士：</strong>可自備三文治、零食與保溫瓶入園，嚴禁攜帶玻璃容器與酒精飲品。
+          </div>
+          <div class="relative pl-6 border-l-2 border-indigo-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-indigo-600 ring-4 ring-indigo-50"></span>
+              <div class="text-xs font-bold text-indigo-600">08:15 - 09:15</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🚆 購票搭乘 RER A 直達迪士尼</div>
+              <p class="text-sm text-slate-600 mt-1">步行至 Châtelet 站機台預買 <strong>RER A 來回紙本專用票（€10.00/人）</strong>，搭乘往 Marne-la-Vallée - Chessy 終點站（約 40-45 分鐘）。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Disneyland+Paris+Marne-la-Vallee" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-medium">📍 巴黎迪士尼樂園</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-indigo-600 ring-4 ring-indigo-50"></span>
+              <div class="text-xs font-bold text-indigo-600">09:30 - 13:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🎬 影城園區（Walt Disney Studios Park）</div>
+              <p class="text-sm text-slate-600 mt-1">1. <strong>Crush's Coaster</strong>（開園首站直奔！）➔ 2. <strong>Tower of Terror</strong>（驚嚇大飯店）➔ 3. <strong>Ratatouille: The Adventure</strong>（料理鼠王 4D）。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Walt+Disney+Studios+Park+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-medium">📍 華特迪士尼影城園區</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">13:00 - 14:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🍔 午餐：Cowboy Cookout Barbecue</div>
+              <p class="text-sm text-slate-600 mt-1">位於 Frontierland 美式牛仔餐廳，主打煙燻豬肋排/半雞套餐（約 €15-€17.5/人），建議透過官方 App Mobile Order 點餐快取。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Cowboy+Cookout+Barbecue+Disneyland+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Cowboy Cookout Barbecue</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-indigo-600 ring-4 ring-indigo-50"></span>
+              <div class="text-xs font-bold text-indigo-600">14:00 - 17:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🏰 主園區景點與限定掃貨</div>
+              <p class="text-sm text-slate-600 mt-1">1. 睡美人城堡底層 <strong>Merlin l'Enchanteur</strong> 購買客製化手工玻璃魔杖。<br>2. <strong>Autopia</strong> 駕駛復古賽車。<br>3. <strong>World of Disney</strong> 掃貨巴黎鐵塔限定公仔與周邊。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=World+of+Disney+Disney+Village+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-medium">📍 World of Disney</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-purple-600 ring-4 ring-purple-50"></span>
+              <div class="text-xs font-bold text-purple-600">17:30 - 23:30+</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🎆 日間巡遊、夜間城堡煙花秀 &amp; 油封鴨腿宵夜</div>
+              <p class="text-sm text-slate-600 mt-1">17:30 觀賞 <strong>Disney Stars on Parade</strong>；20:30 觀賞 <strong>Disney Electrical Sky Parade &amp; Illuminations</strong> 煙花秀。22:30 憑回程票搭 RER A 返回 Châtelet，回房香煎油封鴨腿 10 分鐘配松露薯片作完美宵夜！</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 4 -->
+      <article id="day-4" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-blue-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-900 via-blue-800 to-amber-700 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-amber-200 uppercase tracking-wider">Day 4｜2027年3月28日（日）</span>
+            <h2 class="text-lg font-bold">🥐 巴士底市集、瑪黑區 &amp; 手信大掃貨</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">手信採購日</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-blue-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">09:15 - 11:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🥐 巴士底市集（Marché Bastille）早午餐</div>
+              <p class="text-sm text-slate-600 mt-1">Apple Wallet 刷地鐵 1 號線（3 站）直達 Bastille 站。必試現煎蕎麥鹹餅（Complète）、西班牙海鮮燉飯及現開諾曼第生蠔配白酒。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Marche+Bastille+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 Marché Bastille</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">11:30 - 14:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛍️ 孚日廣場、瑪黑區選物 &amp; Kusmi Tea 專門店</div>
+              <p class="text-sm text-slate-600 mt-1">漫步 <strong>孚日廣場</strong> ➔ 逛 <strong>Merci</strong>（拍紅色古董車）與 <strong>Bring France Home</strong> ➔ 午餐食 <strong>L'As du Fallafel</strong>（23 Rue des Rosiers 中東口袋餅）➔ 至 <strong>Kusmi Tea 薔薇街專門店</strong>（56 Rue des Rosiers）挑選 <strong>5入迷你鐵罐禮盒（約 €20-€24）</strong> 送給協助工作同事。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Place+des+Vosges+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 孚日廣場</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Merci+111+Boulevard+Beaumarchais+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 Merci 選物店</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=L'As+du+Fallafel+23+Rue+des+Rosiers+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 L'As du Fallafel</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Kusmi+Tea+56+Rue+des+Rosiers+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Kusmi Tea 薔薇街店</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">14:30 - 18:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">⛪ 巴黎聖母院 &amp; 聖路易島生蠔雪糕</div>
+              <p class="text-sm text-slate-600 mt-1">步行至西岱島欣賞修復後的 <strong>巴黎聖母院</strong> 外觀；過橋至聖路易島 <strong>Poget &amp; De Witte</strong> 生蠔吧配白酒，再到 <strong>Maison Berthillon</strong> 食傳統手工雪糕。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Cathedrale+Notre-Dame+de+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 巴黎聖母院</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Poget+%26+De+Witte+Ile+Saint-Louis+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Poget &amp; De Witte</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Maison+Berthillon+Ile+Saint-Louis+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Maison Berthillon</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">18:30 - 20:00+</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛒 Monoprix 辦公室手信大掃貨 &amp; 晚餐</div>
+              <p class="text-sm text-slate-600 mt-1">返回 <strong>Monoprix Les Halles</strong> 掃貨：Bonne Maman 小塔餅、黑松露洋芋片、Lindt/Côte d'Or 海鹽焦糖/開心果朱古力、環保購物袋。20:00 後於周邊享用晚餐（如百年豬腳店 <strong>Au Pied de Cochon</strong>）並收拾行李。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Monoprix+Les+Halles+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">📍 Monoprix Les Halles</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Au+Pied+de+Cochon+Paris" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Au Pied de Cochon</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 5 -->
+      <article id="day-5" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-emerald-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-900 via-teal-800 to-emerald-800 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider">Day 5｜2027年3月29日（一）</span>
+            <h2 class="text-lg font-bold">🇫🇮 飛往赫爾辛基 &amp; 搭乘 VR 夜車</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">跨國移動</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-emerald-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">06:45 - 10:45</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛫 巴黎退房 ➔ 搭乘 AY1572 飛往赫爾辛基</div>
+              <p class="text-sm text-slate-600 mt-1">06:45-07:15 退房；07:15-08:00 購 RER B 單程票（€11.80/人）往 CDG T2B；08:15 辦登機安檢；<strong>10:45 - 14:20 搭乘 AY1572</strong> 飛抵赫爾辛基（HEL）。</p>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">14:20 - 19:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🏛️ 赫爾辛基中央車站寄行李 &amp; 快閃漫步</div>
+              <p class="text-sm text-slate-600 mt-1">搭 P/I 線區間火車往赫爾辛基中央火車站寄放行李，漫步參觀<strong>赫爾辛基座堂</strong>、<strong>烏斯別斯基東正教堂</strong>及 <strong>Oodi 頌歌中央圖書館</strong>。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Helsinki+Central+Station" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 赫爾辛基中央車站</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Helsinki+Cathedral" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 赫爾辛基座堂</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Uspenski+Cathedral+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 烏斯別斯基教堂</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Helsinki+Central+Library+Oodi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 Oodi 圖書館</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">22:00 - 23:04</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛒 S-market Sokos 補給 &amp; 🚂 VR 夜臥列車 PYO 273</div>
+              <p class="text-sm text-slate-600 mt-1">22:00 至車站對面 <strong>S-market Sokos Helsinki（24小時營業）</strong> 採購大瓶水、燕麥飲、果品及即食麵/餐盒（作木屋自煮糧食）。<strong>23:04 準時搭乘 VR 夜臥列車 PYO 273</strong> 前往羅凡尼米！</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=S-market+Sokos+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 S-market Sokos Helsinki</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 6 -->
+      <article id="day-6" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-emerald-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-700 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider">Day 6｜2027年3月30日（二）</span>
+            <h2 class="text-lg font-bold">🎅 抵達北極圈 &amp; 聖誕老人村慢遊</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">北極圈 Day 1</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-emerald-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">10:58 - 12:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🚂 抵達羅凡尼米 &amp; 入住聖誕老人度假村</div>
+              <p class="text-sm text-slate-600 mt-1">10:58 抵達 Rovaniemi 火車站，搭公車或 Uber 直達 <strong>Santa Claus Holiday Village</strong> 辦理入住或寄存行李。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Rovaniemi+Railway+Station" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">📍 羅凡尼米火車站</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Santa+Claus+Holiday+Village+Tahtikuja+2+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 Santa Claus Holiday Village</a>
+                <button onclick="copyText('Tähtikuja 2, 96930 Rovaniemi, Finland', '已複製聖誕老人村地址')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">📋 複製地址</button>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">12:00 - 13:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🐟 午餐：Santa's Salmon Place 木炭烤三文魚</div>
+              <p class="text-sm text-slate-600 mt-1">於園區內傳統薩米帳篷木屋品嚐現烤營火三文魚。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Santa's+Salmon+Place+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Santa's Salmon Place</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">13:30 - 夜間</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🎅 聖誕老人村慢遊 &amp; 🌌 守候極光</div>
+              <p class="text-sm text-slate-600 mt-1">拜訪 <strong>聖誕老人辦公室</strong> 合照、跨越北極圈線、到 <strong>聖誕老人官方郵局</strong> 寄明信片與逛精品店。傍晚回木屋使用 Sokos 食材自煮晚餐，夜間隨時走出木屋抬頭守候極光！</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Santa+Claus+Office+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 聖誕老人辦公室</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Santa+Claus'+Main+Post+Office+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 聖誕老人主郵局</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 7 -->
+      <article id="day-7" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-emerald-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-cyan-900 via-teal-800 to-emerald-800 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-cyan-200 uppercase tracking-wider">Day 7｜2027年3月31日（三）</span>
+            <h2 class="text-lg font-bold">🚢 Kemi Arktis 破冰船全日遊</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">重頭戲</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-cyan-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-cyan-600 ring-4 ring-cyan-50"></span>
+              <div class="text-xs font-bold text-cyan-700">09:30 - 18:45</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🧊 專車往返 Kemi 參加 Arktis 破冰船一日遊</div>
+              <p class="text-sm text-slate-600 mt-1">09:30 專車出發前往凱米（Kemi），登上破冰船體驗震撼冰海航行，並換上特製龍蝦裝體驗<strong>冰海漂浮（Ice Floating）</strong>！18:45 專車送回 Santa Claus Holiday Village。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Arktis+Icebreaker+Kemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-50 text-cyan-800 text-xs font-medium">📍 Kemi 破冰船港口</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">晚上 &amp; 夜間</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🍳 木屋自煮溫馨晚餐 &amp; 夜觀極光</div>
+              <p class="text-sm text-slate-600 mt-1">沖熱水澡放鬆體力，在木屋烹調晚餐，夜間繼續留意極光指數。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 8 -->
+      <article id="day-8" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-emerald-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-700 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider">Day 8｜2027年4月1日（四）</span>
+            <h2 class="text-lg font-bold">🦌 馴鹿農場雪橇 &amp; 🏍️ 雪地電單車</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-amber-400/20 border border-amber-300/30 text-amber-100 text-xs font-semibold">GYG 已預訂</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-emerald-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">08:30 - 12:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🦌 GYG 上午場：馴鹿農場參觀 + 400m 馴鹿雪橇</div>
+              <p class="text-sm text-slate-600 mt-1">08:30 度假村早餐；<strong>09:00 準時於 Three Elves Restaurant 集合上車</strong>，前往家族經營馴鹿農場拍照與體驗 400 公尺馴鹿雪橇騎乘，約 11:30-12:00 專車送回。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Three+Elves+Restaurant+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 集合點：Three Elves Restaurant</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">12:00 - 14:10</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🍽️ 園區午餐 &amp; 回木屋休息換裝</div>
+              <p class="text-sm text-slate-600 mt-1">於 Santa's Salmon Place 或 Three Elves 享用午餐，13:30 回木屋稍作休息並穿好極地防寒裝備。</p>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">14:10 - 17:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🏍️ GYG 下午場：Snowmobile 雪地電單車導賞團</div>
+              <p class="text-sm text-slate-600 mt-1"><strong>14:10 於 Santa Claus Holiday Village 集合點報到上車</strong>，駕駛雪地電單車穿梭於北極圈雪原森林，約 16:30/17:00 返回木屋。晚上自煮晚餐與夜觀極光。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Santa+Claus+Holiday+Village+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 集合點：Santa Claus Holiday Village</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 9 -->
+      <article id="day-9" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-emerald-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-900 via-teal-800 to-slate-800 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-emerald-200 uppercase tracking-wider">Day 9｜2027年4月2日（五）</span>
+            <h2 class="text-lg font-bold">🏛️ 羅凡尼米市中心探索 &amp; VR 夜車回程</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">夜臥列車</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-emerald-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">10:00 - 11:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🧳 退房 &amp; K-Market Toriportti 寄存大件行李</div>
+              <p class="text-sm text-slate-600 mt-1">10:00 退房搭車前往羅凡尼米市中心，至 <strong>K-Market Toriportti</strong> 辦理大件行李寄存。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=K-Market+Toriportti+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 K-Market Toriportti (寄行李)</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">11:00 - 13:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🏛️ 參觀北極圈科學博物館（Arktikum）</div>
+              <p class="text-sm text-slate-600 mt-1">欣賞著名的長形玻璃穹頂建築，深入了解北極自然生態與薩米原住民文化。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Arktikum+Science+Museum+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 Arktikum 科學博物館</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">13:30 - 19:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛍️ 市中心購物、下午茶 &amp; 拉普蘭晚餐</div>
+              <p class="text-sm text-slate-600 mt-1">漫步 <strong>Lordi's Square 洛爾迪廣場</strong> ➔ 逛 <strong>Sampokeskus / Revontuli</strong> 商場（Marimekko、Iittala、Moomin）➔ 造訪 <strong>Lauri Handicrafts</strong> 薩米手工藝品 ➔ 品嚐肉桂捲咖啡 ➔ 17:30 享用在地拉普蘭晚餐。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Lordi's+Square+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 Lordi's Square</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Shopping+Centre+Sampokeskus+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 Sampokeskus 商場</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Lauri+Handicrafts+Rovaniemi" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">📍 Lauri Handicrafts</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-slate-700 ring-4 ring-slate-100"></span>
+              <div class="text-xs font-bold text-slate-700">19:30 - 21:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🚂 取行李 &amp; 搭乘 VR 夜臥列車 PYO 274</div>
+              <p class="text-sm text-slate-600 mt-1">19:30 返回 K-Market Toriportti 取回行李前往羅凡尼米火車站，<strong>21:00 搭乘 PYO 274</strong> 返回赫爾辛基。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 10 -->
+      <article id="day-10" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-emerald-200/80 overflow-hidden">
+        <div class="bg-gradient-to-r from-teal-900 via-emerald-800 to-blue-900 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-teal-200 uppercase tracking-wider">Day 10｜2027年4月3日（六）</span>
+            <h2 class="text-lg font-bold">🐟 赫爾辛基掃貨、Early Dinner ➔ 機場</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">最後衝刺</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-teal-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-teal-600 ring-4 ring-teal-50"></span>
+              <div class="text-xs font-bold text-teal-700">09:15 - 11:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🐟 老市場大廳三文魚濃湯 &amp; 岩石教堂</div>
+              <p class="text-sm text-slate-600 mt-1">09:15 抵達赫爾辛基中央火車站寄放行李。前往 <strong>老市場大廳（Old Market Hall / Soppakeittiö）</strong> 品嚐道地熱奶油三文魚濃湯，隨後參觀 <strong>聖殿廣場教堂（岩石教堂）</strong>。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Old+Market+Hall+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-teal-50 text-teal-800 text-xs font-medium">📍 老市場大廳</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Temppeliaukio+Church+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-teal-50 text-teal-800 text-xs font-medium">📍 聖殿廣場岩石教堂</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-teal-600 ring-4 ring-teal-50"></span>
+              <div class="text-xs font-bold text-teal-700">11:30 - 14:30</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛍️ Esplanadi 大道掃貨 &amp; Sokos 超市最後補給</div>
+              <p class="text-sm text-slate-600 mt-1">逛 <strong>Moomin Shop Forum 店</strong>（買馬克杯、姆明茶包、文具）與 <strong>Marimekko 旗艦店</strong>（印花帆布袋）；13:30 至 <strong>Sokos 超市</strong> 買 Fazer 巧克力、姆明軟糖與芬蘭餅乾，隨後回火車站取行李。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Moomin+Shop+Forum+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-teal-50 text-teal-800 text-xs font-medium">📍 Moomin Shop Forum</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Marimekko+Esplanadi+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-teal-50 text-teal-800 text-xs font-medium">📍 Marimekko 旗艦店</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-amber-500 ring-4 ring-amber-50"></span>
+              <div class="text-xs font-bold text-amber-600">14:30 - 19:00</div>
+              <div class="font-semibold text-slate-900 mt-0.5">☕ 下午茶放鬆 &amp; 🍽️ Early Dinner 早晚餐</div>
+              <p class="text-sm text-slate-600 mt-1">市中心咖啡館悠閒下午茶，<strong>17:30 - 19:00 享用 Early Dinner</strong>（推薦傳統木屋餐廳 <strong>Savotta</strong> 或家常菜 <strong>Konstan Mesta</strong>）。</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Restaurant+Savotta+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Savotta 餐廳</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Konstan+Mesta+Helsinki" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 text-xs font-medium">📍 Konstan Mesta</a>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">19:30 - 20:30+</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🚆 前往 HEL 機場辦理登機、退稅 &amp; 免稅店衝刺</div>
+              <p class="text-sm text-slate-600 mt-1">搭乘 P/I 線區間火車（約 30 分鐘）直達赫爾辛基萬塔機場，20:30 後辦理 Check-in、退稅，並於機場免稅區 <strong>Moomin Shop</strong> 作最後補購。</p>
+              <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=Helsinki+Airport" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">📍 赫爾辛基萬塔機場 HEL</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Day 11 -->
+      <article id="day-11" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-900 to-slate-800 text-white px-4 py-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-xs font-semibold text-blue-200 uppercase tracking-wider">Day 11｜2027年4月4日（日）</span>
+            <h2 class="text-lg font-bold">🇭🇰 離境飛抵香港，滿載而歸</h2>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-white/15 text-xs font-semibold">圓滿結束</span>
+        </div>
+        <div class="p-4 space-y-4">
+          <div class="relative pl-6 border-l-2 border-blue-200 space-y-4">
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50"></span>
+              <div class="text-xs font-bold text-blue-600">00:35 起飛</div>
+              <div class="font-semibold text-slate-900 mt-0.5">✈️ 芬蘭航空 AY099（HEL ➔ HKG）</div>
+              <p class="text-sm text-slate-600 mt-1">凌晨 00:35 由赫爾辛基直飛香港。</p>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-600 ring-4 ring-emerald-50"></span>
+              <div class="text-xs font-bold text-emerald-600">17:40 抵達</div>
+              <div class="font-semibold text-slate-900 mt-0.5">🛬 順利返抵香港國際機場（HKG T1）</div>
+              <p class="text-sm text-slate-600 mt-1">帶著滿滿的巴黎浪漫與北極圈極光回憶，圓滿結束夢幻假期！</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- ==================== 分頁 2：總覽（航班/住宿/預約/天氣/清單） ==================== -->
+    <div id="view-overview" class="hidden space-y-6">
+
+      <!-- 1. 跨國航班與 VR 夜臥列車時刻 -->
+      <section id="sec-flights" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center gap-2">
+          <span>✈️</span>
+          <h2 class="font-bold text-base">跨國航班與 VR 夜臥列車精確時刻</h2>
+        </div>
+        <div class="p-4 space-y-3">
+          <!-- Flight Cards -->
+          <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+            <div class="flex justify-between items-center text-xs font-bold text-blue-800">
+              <span>3/25 (四) — 3/26 (五)｜芬蘭航空</span>
+              <span class="px-2 py-0.5 bg-blue-600 text-white rounded-md">AY100</span>
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-sm font-bold text-slate-900">
+              <span>香港 HKG 21:45</span>
+              <span class="text-blue-500">➔</span>
+              <span>赫爾辛基 HEL 05:45 +1</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+            <div class="flex justify-between items-center text-xs font-bold text-blue-800">
+              <span>3/26 (五)｜芬蘭航空</span>
+              <span class="px-2 py-0.5 bg-blue-600 text-white rounded-md">AY1571</span>
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-sm font-bold text-slate-900">
+              <span>赫爾辛基 HEL 07:40</span>
+              <span class="text-blue-500">➔</span>
+              <span>巴黎 CDG 2B 09:50</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-100">
+            <div class="flex justify-between items-center text-xs font-bold text-blue-800">
+              <span>3/29 (一)｜芬蘭航空</span>
+              <span class="px-2 py-0.5 bg-blue-600 text-white rounded-md">AY1572</span>
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-sm font-bold text-slate-900">
+              <span>巴黎 CDG 2B 10:45</span>
+              <span class="text-blue-500">➔</span>
+              <span>赫爾辛基 HEL 14:20</span>
+            </div>
+          </div>
+
+          <!-- Train Cards -->
+          <div class="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200">
+            <div class="flex justify-between items-center text-xs font-bold text-emerald-800">
+              <span>3/29 (一) — 3/30 (二)｜VR 夜臥列車</span>
+              <span class="px-2 py-0.5 bg-emerald-600 text-white rounded-md">PYO 273</span>
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-sm font-bold text-slate-900">
+              <span>赫爾辛基 HEL 23:04</span>
+              <span class="text-emerald-600">➔</span>
+              <span>羅凡尼米 ROV 10:58 +1</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200">
+            <div class="flex justify-between items-center text-xs font-bold text-emerald-800">
+              <span>4/2 (五) — 4/3 (六)｜VR 夜臥列車</span>
+              <span class="px-2 py-0.5 bg-emerald-600 text-white rounded-md">PYO 274</span>
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-sm font-bold text-slate-900">
+              <span>羅凡尼米 ROV 21:00</span>
+              <span class="text-emerald-600">➔</span>
+              <span>赫爾辛基 HEL 09:15 +1</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-100 border border-slate-200">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-700">
+              <span>4/4 (日)｜芬蘭航空</span>
+              <span class="px-2 py-0.5 bg-slate-800 text-white rounded-md">AY099</span>
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-sm font-bold text-slate-900">
+              <span>赫爾辛基 HEL 00:35</span>
+              <span class="text-slate-500">➔</span>
+              <span>香港 HKG 17:40</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 酒店住宿資訊 -->
+      <section id="sec-hotels" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center gap-2">
+          <span>🏨</span>
+          <h2 class="font-bold text-base">酒店住宿資訊（一鍵複製 / 導航）</h2>
+        </div>
+        <div class="p-4 space-y-4">
+          <!-- Paris Hotel -->
+          <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-200">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">🇫🇷 3/26 - 3/29（3晚）</span>
+              <span class="text-xs text-slate-500">Châtelet 旁</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mt-2">Citadines Les Halles Paris</h3>
+            <p class="text-sm text-slate-600 mt-1">📍 4 Rue des Innocents, 75001 Paris, France</p>
+            <p class="text-xs text-blue-800 mt-1.5 bg-white/80 p-2 rounded-lg">💡 RER B 認準 <strong>Sortie 1 (Marguerite de Navarre)</strong> 升降機出站，步行 2 分鐘即達。</p>
+            <div class="mt-3 flex gap-2">
+              <button onclick="copyText('4 Rue des Innocents, 75001 Paris, France', '已複製巴黎酒店地址')" class="flex-1 py-2.5 px-3 bg-white border border-blue-300 text-blue-800 rounded-xl text-xs font-bold shadow-xs active:scale-95 transition flex items-center justify-center gap-1.5">
+                📋 複製地址
+              </button>
+              <a href="https://www.google.com/maps/search/?api=1&query=Citadines+Les+Halles+Paris+4+Rue+des+Innocents+75001+Paris" target="_blank" rel="noopener" class="flex-1 py-2.5 px-3 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs active:scale-95 transition flex items-center justify-center gap-1.5">
+                🗺️ Google Maps
+              </a>
+            </div>
+          </div>
+
+          <!-- Finland Hotel -->
+          <div class="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">🇫🇮 3/30 - 4/2（3晚）</span>
+              <span class="text-xs text-slate-500">北極圈聖誕老人村</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mt-2">Santa Claus Holiday Village</h3>
+            <p class="text-sm text-slate-600 mt-1">📍 Tähtikuja 2, 96930 Rovaniemi, Finland</p>
+            <p class="text-xs text-emerald-800 mt-1.5 bg-white/80 p-2 rounded-lg">💡 獨立木屋附桑拿與小廚房，出門即達聖誕老人辦公室與活動集合點。</p>
+            <div class="mt-3 flex gap-2">
+              <button onclick="copyText('Tähtikuja 2, 96930 Rovaniemi, Finland', '已複製聖誕老人村酒店地址')" class="flex-1 py-2.5 px-3 bg-white border border-emerald-300 text-emerald-800 rounded-xl text-xs font-bold shadow-xs active:scale-95 transition flex items-center justify-center gap-1.5">
+                📋 複製地址
+              </button>
+              <a href="https://www.google.com/maps/search/?api=1&query=Santa+Claus+Holiday+Village+Tahtikuja+2+Rovaniemi" target="_blank" rel="noopener" class="flex-1 py-2.5 px-3 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-xs active:scale-95 transition flex items-center justify-center gap-1.5">
+                🗺️ Google Maps
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 預約資訊與購票策略 -->
+      <section id="sec-bookings" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center gap-2">
+          <span>🎫</span>
+          <h2 class="font-bold text-base">已預訂活動 &amp; 巴黎交通購票策略</h2>
+        </div>
+        <div class="p-4 space-y-4">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-2">🇫🇮 芬蘭已預訂極地活動</h3>
+            <div class="space-y-2.5">
+              <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-sm">
+                <div class="font-bold text-slate-900">🚢 3月31日（三）Kemi Arktis 破冰船全日遊</div>
+                <p class="text-xs text-slate-600 mt-1"><strong>09:30</strong> 專車出發往 Kemi（含破冰航行、冰海漂浮），<strong>18:45</strong> 專車送回 Santa Claus Holiday Village。</p>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-sm">
+                <div class="font-bold text-slate-900">🦌 4月1日（四）GYG 上午場：馴鹿農場 + 400m 雪橇</div>
+                <p class="text-xs text-slate-600 mt-1"><strong>09:00</strong> 於 <strong>Three Elves Restaurant</strong> 集合上車，參觀家族馴鹿農場拍照 + 400公尺馴鹿雪橇騎乘（約 11:30-12:00 送回）。</p>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-sm">
+                <div class="font-bold text-slate-900">🏍️ 4月1日（四）GYG 下午場：Snowmobile 雪地電單車</div>
+                <p class="text-xs text-slate-600 mt-1"><strong>14:10</strong> 於 <strong>Santa Claus Holiday Village</strong> 集合點報到上車，雪地電單車導賞團（約 16:30/17:00 返回）。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-2">🇫🇷 巴黎交通購票全攻略</h3>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100">
+                <span class="font-bold text-blue-900">1. CDG 機場往返（3/26 &amp; 3/29）：</span><br>
+                <span class="text-xs text-slate-600">於機場/車站機台購買 <strong>RER B 紙本單程票（€11.80 / 人）</strong>。</span>
+              </li>
+              <li class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100">
+                <span class="font-bold text-blue-900">2. 巴黎市區地鐵（3/26 &amp; 3/28）：</span><br>
+                <span class="text-xs text-slate-600">iPhone Apple Wallet 新增 <strong>Navigo 卡</strong>，購買 <strong>Ticket t+ 10張套票（Carnet，約 €17.35）</strong>，兩人共用（連續刷兩次即可）。</span>
+              </li>
+              <li class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100">
+                <span class="font-bold text-blue-900">3. 迪士尼專線（3/27）：</span><br>
+                <span class="text-xs text-slate-600">出發前於 Châtelet 站機台預買 <strong>RER A 來回紙本專用票（€5.00 x 2 = €10.00 / 人）</strong>。</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 3月底至4月初天氣與穿搭指南 -->
+      <section id="sec-weather" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center gap-2">
+          <span>🧥</span>
+          <h2 class="font-bold text-base">3月底至4月初 天氣與穿搭指南</h2>
+        </div>
+        <div class="p-4 space-y-3">
+          <div class="p-3.5 rounded-xl bg-blue-50/60 border border-blue-200">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-blue-900">🇫🇷 巴黎（3/26 - 3/29）</h3>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800">6°C – 14°C</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              <strong>天氣特徵：</strong>初春微涼多變，早晚偏冷、偶有春雨。<br>
+              <strong>穿搭建議：</strong>洋蔥式穿搭（風衣/薄羽絨 + 長袖針織 + 圍巾 + 摺疊雨傘 + 好走的防水休閒鞋）。
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-teal-50/60 border border-teal-200">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-teal-900">🇫🇮 赫爾辛基（3/29 &amp; 4/3）</h3>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-teal-100 text-teal-800">-2°C – 5°C</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              <strong>天氣特徵：</strong>冬末初春，海風較涼、路面偶有殘雪融水。<br>
+              <strong>穿搭建議：</strong>防風保暖外套 + 保暖內層 + 防滑鞋。
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-emerald-900">❄️ 羅凡尼米 / Kemi（3/30 - 4/2）</h3>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">-10°C – 0°C</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              <strong>天氣特徵：</strong>北極圈雪季尾聲，積雪仍厚、日照變長，但夜間追極光與雪車/破冰船極寒。<br>
+              <strong>穿搭建議：</strong>極地防寒三層穿法（發熱衣 + 抓絨/羊毛中層 + 防風防水厚羽絨/滑雪外套）、雪褲、防水防滑雪靴、毛帽、觸控防水手套、暖暖包（雪車與破冰船活動通常附連身防寒服與雪靴）。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 互動式檢核清單 (LocalStorage 記憶狀態) -->
+      <section id="sec-checklist" class="scroll-mt-32 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span>✅</span>
+            <h2 class="font-bold text-base">已預訂活動 / 交通 / 手信檢核清單</h2>
+          </div>
+          <button onclick="resetChecklist()" class="text-xs bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg transition">重設勾選</button>
+        </div>
+        <div class="p-4 space-y-5">
+          <p class="text-xs text-slate-500">💡 點擊項目即可打勾，勾選進度會自動儲存在您的手機瀏覽器中。</p>
+
+          <!-- Checklist Group 1 -->
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">🎫 交通與活動預約確認</h3>
+            <div class="space-y-2">
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-1" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                <span class="text-sm font-medium text-slate-800">芬蘭航空機票（AY100 / AY1571 / AY1572 / AY099）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-2" class="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-medium text-slate-800">VR 夜臥列車車票（3/29 PYO 273 &amp; 4/2 PYO 274）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-3" class="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-medium text-slate-800">3/31 Kemi Arktis 破冰船全日遊憑證（09:30 出發）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-4" class="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-medium text-slate-800">4/1 GYG 馴鹿農場 + 400m 雪橇（09:00 Three Elves 集合）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-5" class="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-medium text-slate-800">4/1 GYG 雪地電單車導賞團（14:10 度假村集合）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-6" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                <span class="text-sm font-medium text-slate-800">iPhone Apple Wallet 新增 Navigo 卡 + 買 Carnet 10張套票</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer active:bg-slate-100">
+                <input type="checkbox" data-check-id="chk-7" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                <span class="text-sm font-medium text-slate-800">巴黎迪士尼雙園門票 &amp; 預買 RER A 來回紙本票</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Checklist Group 2 -->
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-700 mb-2">🛍️ 巴黎手信採購清單（3/27 &amp; 3/28）</h3>
+            <div class="space-y-2">
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-amber-50/50 border border-amber-200/70 cursor-pointer">
+                <input type="checkbox" data-check-id="chk-8" class="w-5 h-5 rounded text-amber-600 focus:ring-amber-500">
+                <span class="text-sm font-medium text-slate-800">迪士尼 Merlin l'Enchanteur 客製手工玻璃魔杖 + 鐵塔限定公仔</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-amber-50/50 border border-amber-200/70 cursor-pointer">
+                <input type="checkbox" data-check-id="chk-9" class="w-5 h-5 rounded text-amber-600 focus:ring-amber-500">
+                <span class="text-sm font-medium text-slate-800">瑪黑區 Kusmi Tea 專門店：5入迷你鐵罐禮盒（送協助工作同事）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-amber-50/50 border border-amber-200/70 cursor-pointer">
+                <input type="checkbox" data-check-id="chk-10" class="w-5 h-5 rounded text-amber-600 focus:ring-amber-500">
+                <span class="text-sm font-medium text-slate-800">Monoprix 辦公室散派：Bonne Maman 小塔餅、黑松露薯片、海鹽焦糖朱古力</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Checklist Group 3 -->
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-teal-700 mb-2">🦌 芬蘭手信採購清單（4/2 &amp; 4/3）</h3>
+            <div class="space-y-2">
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-teal-50/50 border border-teal-200/70 cursor-pointer">
+                <input type="checkbox" data-check-id="chk-11" class="w-5 h-5 rounded text-teal-600 focus:ring-teal-500">
+                <span class="text-sm font-medium text-slate-800">羅凡尼米 Lauri Handicrafts 薩米傳統木雕杯（Kuksa）</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-teal-50/50 border border-teal-200/70 cursor-pointer">
+                <input type="checkbox" data-check-id="chk-12" class="w-5 h-5 rounded text-teal-600 focus:ring-teal-500">
+                <span class="text-sm font-medium text-slate-800">Marimekko 印花帆布袋 &amp; Moomin Shop 馬克杯/茶包</span>
+              </label>
+              <label class="check-item flex items-center gap-3 p-3 rounded-xl bg-teal-50/50 border border-teal-200/70 cursor-pointer">
+                <input type="checkbox" data-check-id="chk-13" class="w-5 h-5 rounded text-teal-600 focus:ring-teal-500">
+                <span class="text-sm font-medium text-slate-800">Sokos 超市：Fazer 巧克力、姆明軟糖、芬蘭餅乾</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- 底部懸浮快捷工具列 -->
+  <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2.5 shadow-lg">
+    <div class="max-w-2xl mx-auto flex items-center justify-between gap-2">
+      <button onclick="switchMainTab('itinerary'); window.scrollTo({top: 0, behavior: 'smooth'});" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition">
+        ⬆️ 回到頂部
+      </button>
+      <button onclick="switchMainTab('overview'); setTimeout(() => document.getElementById('sec-hotels').scrollIntoView({behavior:'smooth'}), 50);" class="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition">
+        🏨 酒店地址
+      </button>
+      <button onclick="switchMainTab('overview'); setTimeout(() => document.getElementById('sec-checklist').scrollIntoView({behavior:'smooth'}), 50);" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition">
+        ✅ 檢核清單
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 1. 顯示自訂 Toast 通知（不使用 alert）
+    let toastTimer = null;
+    function showToast(msg, icon = '✅') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-icon').textContent = icon;
+      toast.classList.remove('opacity-0', 'translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-4');
+      }, 2400);
+    }
+
+    // 2. 一鍵複製文字（相容 iFrame 與手機瀏覽器）
+    function copyText(text, successMsg) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg || '已複製：' + text, '📋');
+      } catch (err) {
+        showToast('複製失敗，請手動選取', '⚠️');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // 3. 主分頁切換（每日行程 vs 總覽資訊）
+    function switchMainTab(tab) {
+      const viewItinerary = document.getElementById('view-itinerary');
+      const viewOverview = document.getElementById('view-overview');
+      const tabItinerary = document.getElementById('tab-itinerary');
+      const tabOverview = document.getElementById('tab-overview');
+      const dayNav = document.getElementById('day-nav-bar');
+      const overviewNav = document.getElementById('overview-nav-bar');
+
+      if (tab === 'itinerary') {
+        viewItinerary.classList.remove('hidden');
+        viewOverview.classList.add('hidden');
+        dayNav.classList.remove('hidden');
+        overviewNav.classList.add('hidden');
+
+        tabItinerary.className = 'flex-1 py-2.5 px-3 text-sm font-bold rounded-t-xl border-b-2 border-blue-600 text-blue-700 bg-blue-50/60 transition flex items-center justify-center gap-1.5';
+        tabOverview.className = 'flex-1 py-2.5 px-3 text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5';
+      } else {
+        viewItinerary.classList.add('hidden');
+        viewOverview.classList.remove('hidden');
+        dayNav.classList.add('hidden');
+        overviewNav.classList.remove('hidden');
+
+        tabOverview.className = 'flex-1 py-2.5 px-3 text-sm font-bold rounded-t-xl border-b-2 border-emerald-600 text-emerald-700 bg-emerald-50/60 transition flex items-center justify-center gap-1.5';
+        tabItinerary.className = 'flex-1 py-2.5 px-3 text-sm font-bold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5';
+      }
+    }
+
+    // 4. 日期導覽膠囊按鈕高亮切換
+    function highlightDayPill(el) {
+      document.querySelectorAll('.day-pill').forEach(pill => {
+        pill.classList.remove('bg-blue-600', 'bg-emerald-600', 'text-white', 'shadow-sm');
+        pill.classList.add('bg-slate-100', 'text-slate-700');
+      });
+      el.classList.remove('bg-slate-100', 'text-slate-700');
+      const href = el.getAttribute('href');
+      const isFinland = ['#day-5', '#day-6', '#day-7', '#day-8', '#day-9', '#day-10'].includes(href);
+      el.classList.add(isFinland ? 'bg-emerald-600' : 'bg-blue-600', 'text-white', 'shadow-sm');
+    }
+
+    // 5. 頂部主題切換（雙色 / 巴黎藍金 / 極光綠）
+    function setTheme(mode) {
+      const banner = document.getElementById('header-banner');
+      const btns = {
+        dual: document.getElementById('btn-theme-dual'),
+        paris: document.getElementById('btn-theme-paris'),
+        finland: document.getElementById('btn-theme-finland')
+      };
+
+      banner.classList.remove('aurora-bg', 'paris-theme-bg', 'finland-theme-bg');
+      Object.values(btns).forEach(b => {
+        b.className = 'px-2.5 py-1 rounded-full text-xs font-medium text-white/80 hover:text-white transition';
+      });
+
+      if (mode === 'paris') {
+        banner.classList.add('paris-theme-bg');
+        btns.paris.className = 'px-2.5 py-1 rounded-full text-xs font-medium bg-white text-slate-900 shadow-sm transition';
+        showToast('已切換為巴黎浪漫藍金主題', '🇫🇷');
+      } else if (mode === 'finland') {
+        banner.classList.add('finland-theme-bg');
+        btns.finland.className = 'px-2.5 py-1 rounded-full text-xs font-medium bg-white text-slate-900 shadow-sm transition';
+        showToast('已切換為芬蘭極光綠主題', '🇫🇮');
+      } else {
+        banner.classList.add('aurora-bg');
+        btns.dual.className = 'px-2.5 py-1 rounded-full text-xs font-medium bg-white text-slate-900 shadow-sm transition';
+        showToast('已切換為巴黎 × 芬蘭雙色主題', '✨');
+      }
+    }
+
+    // 6. LocalStorage 互動式檢核清單狀態儲存
+    const STORAGE_KEY = 'paris_finland_2027_checklist_v1';
+
+    function loadChecklist() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        document.querySelectorAll('input[data-check-id]').forEach(cb => {
+          const id = cb.getAttribute('data-check-id');
+          cb.checked = !!saved[id];
+          cb.addEventListener('change', saveChecklist);
+        });
+      } catch (e) {
+        console.warn('LocalStorage 無法存取', e);
+      }
+    }
+
+    function saveChecklist() {
+      try {
+        const state = {};
+        document.querySelectorAll('input[data-check-id]').forEach(cb => {
+          state[cb.getAttribute('data-check-id')] = cb.checked;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('LocalStorage 儲存失敗', e);
+      }
+    }
+
+    function resetChecklist() {
+      document.querySelectorAll('input[data-check-id]').forEach(cb => {
+        cb.checked = false;
+      });
+      saveChecklist();
+      showToast('已重設所有檢核清單項目', '🔄');
+    }
+
+    // 頁面載入後初始化清單
+    window.addEventListener('DOMContentLoaded', loadChecklist);
+  </script>
+</body>
+</html>
